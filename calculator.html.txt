@@ -1,0 +1,1900 @@
+<!doctype html>
+
+
+    
+    
+    Калькулятор ипотеки с досрочными платежами
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e8f0f8 100%);
+            color: #1a2b3c;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 70, 133, 0.1), 
+                        0 2px 10px rgba(33, 160, 56, 0.05);
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        header {
+            background: linear-gradient(135deg, #004685 0%, #0077cc 50%, #00a86b 100%);
+            color: white;
+            padding: 30px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+        }
+        
+        .logo-samolet {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .logo-sber {
+            background: rgba(33, 160, 56, 0.2);
+            color: white;
+            border: 2px solid rgba(33, 160, 56, 0.3);
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 400;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .calculator-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 800px;
+        }
+        
+        @media (max-width: 1200px) {
+            .calculator-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section {
+            background: #f8fafc;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            border-right: 1px solid #e8ecef;
+            max-height: 1000px;
+            overflow-y: auto;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #1a2b3c;
+            font-size: 15px;
+        }
+        
+        .value-display {
+            font-weight: 700;
+            font-size: 18px;
+            background: linear-gradient(90deg, #004685, #00a86b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background-color: rgba(0, 118, 204, 0.05);
+        }
+        
+        input, select, button {
+            padding: 14px 18px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: white;
+            color: #1a2b3c;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            font-weight: 500;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0077cc;
+            box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.1);
+        }
+        
+        input.invalid {
+            border-color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.03);
+        }
+        
+        /* Стили для ползунков */
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 5px;
+        }
+        
+        .slider-with-input {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .slider-with-input input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #e0e6ed;
+            outline: none;
+            -webkit-appearance: none;
+            transition: background 0.3s;
+        }
+        
+        .slider-with-input input[type="range"]:hover {
+            background: #d0d8e2;
+        }
+        
+        .slider-with-input input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 2px solid #0077cc;
+            box-shadow: 0 2px 8px rgba(0, 70, 133, 0.2);
+            transition: all 0.2s;
+        }
+        
+        .slider-with-input input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 70, 133, 0.3);
+        }
+        
+        .slider-with-input input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 2px solid #0077cc;
+            box-shadow: 0 2px 8px rgba(0, 70, 133, 0.2);
+        }
+        
+        .slider-value {
+            min-width: 100px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 18px;
+            color: #004685;
+            background: rgba(0, 118, 204, 0.05);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+        
+        .currency-selector, .ndfl-selector, .early-type-selector {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .currency-option, .ndfl-option, .early-type-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .currency-option:hover, .ndfl-option:hover, .early-type-option:hover {
+            background-color: rgba(0, 118, 204, 0.05);
+        }
+        
+        .currency-option input, .ndfl-option input, .early-type-option input {
+            margin: 0;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .currency-option.active, .ndfl-option.active, .early-type-option.active {
+            border-color: #0077cc;
+            background-color: rgba(0, 118, 204, 0.08);
+        }
+        
+        .early-payment-section {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, rgba(255, 152, 0, 0.05) 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+        
+        .early-payment-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .early-payment-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .remove-early-payment {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .remove-early-payment:hover {
+            background: rgba(231, 76, 60, 0.2);
+        }
+        
+        .add-early-payment {
+            background: linear-gradient(135deg, #0077cc, #00a86b);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .add-early-payment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 119, 204, 0.2);
+        }
+        
+        .exchange-rate-container {
+            background: linear-gradient(135deg, rgba(0, 118, 204, 0.05) 0%, rgba(33, 160, 56, 0.05) 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+            border: 1px solid rgba(0, 118, 204, 0.1);
+        }
+        
+        .exchange-rate-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #004685;
+        }
+        
+        .exchange-rate-info {
+            font-size: 14px;
+            color: #5a6c7d;
+            margin-top: 8px;
+            font-style: normal;
+        }
+        
+        .term-inputs {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .term-inputs > div {
+            flex: 1;
+        }
+        
+        .validation-message {
+            font-size: 13px;
+            color: #e74c3c;
+            margin-top: 5px;
+            min-height: 18px;
+            font-weight: 500;
+        }
+        
+        .results-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .results-card {
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 50%;
+            overflow-y: auto;
+        }
+        
+        .results-card.mortgage {
+            background: white;
+            border-bottom: 1px solid #e8ecef;
+        }
+        
+        .results-card.tax {
+            background: linear-gradient(135deg, #f8fcf9 0%, #f0f9ff 100%);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: white;
+        }
+        
+        .mortgage .card-icon {
+            background: linear-gradient(135deg, #004685, #0077cc);
+        }
+        
+        .tax .card-icon {
+            background: linear-gradient(135deg, #00a86b, #21A038);
+        }
+        
+        .early .card-icon {
+            background: linear-gradient(135deg, #FF9800, #FF5722);
+        }
+        
+        .card-header h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a2b3c;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid #f0f2f5;
+            transition: background-color 0.2s;
+        }
+        
+        .result-row:hover {
+            background-color: rgba(0, 118, 204, 0.02);
+            border-radius: 8px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        
+        .result-row:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-size: 15px;
+            color: #5a6c7d;
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .result-label-with-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background-color: #e0e6ed;
+            color: #5a6c7d;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: help;
+            position: relative;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .info-icon:hover {
+            background-color: #0077cc;
+            color: white;
+        }
+        
+        .info-icon:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1a2b3c;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            white-space: normal;
+            width: 250px;
+            z-index: 100;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            font-weight: normal;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .result-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a2b3c;
+            text-align: right;
+            flex: 0 0 auto;
+        }
+        
+        .result-value.highlight {
+            color: #004685;
+            font-size: 24px;
+        }
+        
+        .result-value.total {
+            color: #00a86b;
+        }
+        
+        .result-value.income {
+            color: #ff6b35;
+        }
+        
+        .result-value.tax {
+            color: #9b59b6;
+        }
+        
+        .result-value.early {
+            color: #FF9800;
+        }
+        
+        .result-value.savings {
+            color: #27ae60;
+        }
+        
+        .result-value.years {
+            color: #e74c3c;
+        }
+        
+        .exchange-rate-display {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(0, 118, 204, 0.05);
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            color: #004685;
+            font-weight: 500;
+            border: 1px solid rgba(0, 118, 204, 0.1);
+        }
+        
+        .explanation {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #7b8a9b;
+            line-height: 1.6;
+            padding: 15px;
+            background: rgba(0, 118, 204, 0.03);
+            border-radius: 10px;
+            border-left: 4px solid #0077cc;
+        }
+        
+        .slider-ticks {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #7b8a9b;
+            margin-top: 5px;
+            padding: 0 5px;
+        }
+        
+        .ndfl-info {
+            background: linear-gradient(135deg, rgba(33, 160, 56, 0.05) 0%, rgba(0, 118, 204, 0.05) 100%);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 14px;
+            color: #1a2b3c;
+            margin-top: 10px;
+            border: 1px solid rgba(33, 160, 56, 0.1);
+            font-weight: 500;
+        }
+        
+        .early-payment-info {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, rgba(255, 152, 0, 0.05) 100%);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 14px;
+            color: #1a2b3c;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+            font-weight: 500;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #7b8a9b;
+            font-size: 14px;
+            border-top: 1px solid #e8ecef;
+            margin-top: 0;
+            background: #f8fafc;
+            font-weight: 500;
+        }
+        
+        .footer-logos {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo {
+            font-weight: 700;
+            font-size: 18px;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        
+        .footer-samolet {
+            color: #004685;
+            background: rgba(0, 70, 133, 0.08);
+        }
+        
+        .footer-sber {
+            color: #21A038;
+            background: rgba(33, 160, 56, 0.08);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e8ecef;
+        }
+        
+        .comparison-table th {
+            background-color: rgba(0, 118, 204, 0.05);
+            color: #004685;
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:hover {
+            background-color: rgba(0, 118, 204, 0.02);
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-wrapper {
+                padding: 0;
+            }
+            
+            .term-inputs {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .result-value {
+                font-size: 18px;
+            }
+            
+            header {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 26px;
+            }
+            
+            .slider-with-input {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .slider-value {
+                text-align: center;
+                width: 100%;
+            }
+            
+            .currency-selector, .ndfl-selector, .early-type-selector {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .input-section, .results-card {
+                padding: 25px 20px;
+            }
+            
+            .footer-logos {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+            
+            .early-payment-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .comparison-table {
+                font-size: 12px;
+            }
+            
+            .comparison-table th, .comparison-table td {
+                padding: 8px;
+            }
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-row {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* Стили для справки */
+        .info-note {
+            font-size: 12px;
+            color: #7b8a9b;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .toggle-early {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .toggle-early input {
+            width: auto;
+        }
+    </style>
+
+
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo-circle logo-samolet">СА</div>
+                    <div class="logo-circle logo-sber">СБ</div>
+                </div>
+                <h1>Калькулятор ипотеки с досрочными платежами</h1>
+                <p class="subtitle">Рассчитайте ежемесячный платеж, налоговый вычет и эффект от досрочного погашения. Точные расчеты на основе актуальных лимитов и ставок.</p>
+            </div>
+        </header>
+        
+        <div class="calculator-wrapper">
+            <div class="input-section">
+                <div class="input-group">
+                    <div class="input-header">
+                        <label for="propertyValue">Стоимость недвижимости</label>
+                        <span class="value-display" id="propertyValueDisplay">5 000 000</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-with-input">
+                            <input type="range" id="propertyValueSlider" min="100000" max="999999999" step="10000" value="5000000" />
+                            <div class="slider-value" id="propertyValueSliderValue">5 000 000</div>
+                        </div>
+                        <div class="slider-ticks">
+                            <span>100 тыс.</span>
+                            <span>50 млн</span>
+                            <span>100 млн</span>
+                            <span>500 млн</span>
+                            <span>1 млрд</span>
+                        </div>
+                    </div>
+                    <input type="number" id="propertyValue" min="100000" step="10000" max="999999999" placeholder="Введите сумму" />
+                    <div class="validation-message" id="propertyValueError"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-header">
+                        <label for="downPayment">Первоначальный взнос</label>
+                        <span class="value-display" id="downPaymentDisplay">1 000 000</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-with-input">
+                            <input type="range" id="downPaymentSlider" min="0" max="99999999" step="10000" value="1000000" />
+                            <div class="slider-value" id="downPaymentSliderValue">1 000 000</div>
+                        </div>
+                        <div class="slider-ticks">
+                            <span>0</span>
+                            <span>25 млн</span>
+                            <span>50 млн</span>
+                            <span>75 млн</span>
+                            <span>100 млн</span>
+                        </div>
+                    </div>
+                    <input type="number" id="downPayment" min="0" step="10000" max="99999999" placeholder="Введите сумму" />
+                    <div class="validation-message" id="downPaymentError"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-header">
+                        <label for="interestRate">Процентная ставка</label>
+                        <span class="value-display" id="interestRateDisplay">12.75%</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-with-input">
+                            <input type="range" id="interestRateSlider" min="1" max="30" step="0.1" value="12.75" />
+                            <div class="slider-value" id="interestRateSliderValue">12.75%</div>
+                        </div>
+                        <div class="slider-ticks">
+                            <span>1%</span>
+                            <span>8%</span>
+                            <span>15%</span>
+                            <span>22%</span>
+                            <span>30%</span>
+                        </div>
+                    </div>
+                    <input type="number" id="interestRate" min="1" step="0.1" max="30" placeholder="Введите процент" />
+                    <div class="validation-message" id="interestRateError"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Срок кредита</label>
+                    <div class="term-inputs">
+                        <div>
+                            <label for="loanYears">Годы</label>
+                            <select id="loanYears">
+                                <option value="" disabled selected />Выберите годы
+                                <!-- Заполним через JavaScript -->
+                            </select>
+                        </div>
+                        <div>
+                            <label for="loanMonths">Месяцы</label>
+                            <select id="loanMonths">
+                                <option value="" disabled selected />Выберите месяцы
+                                <!-- Заполним через JavaScript -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="validation-message" id="loanTermError"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Валюта расчёта</label>
+                    <div class="currency-selector">
+                        <div class="currency-option active" id="rubOption">
+                            <input type="radio" id="currencyRub" name="currency" value="RUB" checked />
+                            <label for="currencyRub">Рубли (RUB)</label>
+                        </div>
+                        <div class="currency-option" id="usdOption">
+                            <input type="radio" id="currencyUsd" name="currency" value="USD" />
+                            <label for="currencyUsd">Доллары (USD)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="exchange-rate-container" id="exchangeRateContainer" style="display: none;">
+                    <label for="exchangeRate">Курс доллара (RUB за 1 USD)</label>
+                    <div class="slider-container">
+                        <div class="slider-with-input">
+                            <input type="range" id="exchangeRateSlider" min="50" max="150" step="0.5" value="90.5" />
+                            <div class="slider-value" id="exchangeRateSliderValue">90.5</div>
+                        </div>
+                        <div class="slider-ticks">
+                            <span>50</span>
+                            <span>75</span>
+                            <span>100</span>
+                            <span>125</span>
+                            <span>150</span>
+                        </div>
+                    </div>
+                    <input type="number" id="exchangeRate" min="50" step="0.1" max="150" value="90.5" placeholder="Введите курс" />
+                    <div class="exchange-rate-info">Актуальный курс для точного расчета в долларах</div>
+                </div>
+                
+                <div class="exchange-rate-display" id="exchangeRateDisplay" style="display: none;">
+                    Текущий курс: 1 USD = <span id="currentExchangeRate">90.5</span> RUB
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-header">
+                        <label for="annualIncome">Годовой доход для вычета</label>
+                        <span class="value-display" id="annualIncomeDisplay">1 200 000</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-with-input">
+                            <input type="range" id="annualIncomeSlider" min="100000" max="20000000" step="10000" value="1200000" />
+                            <div class="slider-value" id="annualIncomeSliderValue">1 200 000</div>
+                        </div>
+                        <div class="slider-ticks">
+                            <span>100 тыс.</span>
+                            <span>5 млн</span>
+                            <span>10 млн</span>
+                            <span>15 млн</span>
+                            <span>20 млн</span>
+                        </div>
+                    </div>
+                    <input type="number" id="annualIncome" min="100000" step="10000" max="20000000" value="1200000" placeholder="Введите годовой доход" />
+                    <div class="ndfl-info">
+                        <strong>Важно:</strong> При годовом доходе свыше 5 млн рублей применяется ставка НДФЛ 15%
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Ставка НДФЛ для вычета</label>
+                    <div class="ndfl-selector">
+                        <div class="ndfl-option active" id="ndfl13Option">
+                            <input type="radio" id="ndfl13" name="ndfl" value="13" checked />
+                            <label for="ndfl13">13% (доход до 5 млн)</label>
+                        </div>
+                        <div class="ndfl-option" id="ndfl15Option">
+                            <input type="radio" id="ndfl15" name="ndfl" value="15" />
+                            <label for="ndfl15">15% (доход от 5 млн)</label>
+                        </div>
+                    </div>
+                    <div class="info-note">Ставка автоматически выбирается при изменении дохода</div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="toggle-early">
+                        <input type="checkbox" id="earlyPaymentCheckbox" />
+                        <label for="earlyPaymentCheckbox"><strong>Учесть досрочные платежи</strong></label>
+                    </div>
+                    
+                    <div class="early-payment-section" id="earlyPaymentSection" style="display: none;">
+                        <div class="input-group">
+                            <label>Тип досрочного погашения</label>
+                            <div class="early-type-selector">
+                                <div class="early-type-option active" id="reduceTermOption">
+                                    <input type="radio" id="reduceTerm" name="earlyType" value="reduceTerm" checked />
+                                    <label for="reduceTerm">Уменьшение срока</label>
+                                </div>
+                                <div class="early-type-option" id="reducePaymentOption">
+                                    <input type="radio" id="reducePayment" name="earlyType" value="reducePayment" />
+                                    <label for="reducePayment">Уменьшение платежа</label>
+                                </div>
+                            </div>
+                            <div class="info-note">
+                                <strong>Уменьшение срока</strong> - ежемесячный платеж не меняется, сокращается срок кредита.<br />
+                                <strong>Уменьшение платежа</strong> - срок кредита не меняется, уменьшается ежемесячный платеж.
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Досрочные платежи</label>
+                            <div id="earlyPaymentsContainer">
+                                <!-- Строки досрочных платежей будут добавляться здесь -->
+                            </div>
+                            <button type="button" class="add-early-payment" id="addEarlyPayment">+ Добавить досрочный платеж</button>
+                            <div class="early-payment-info">
+                                Укажите месяц и сумму досрочного платежа. Можно добавить несколько досрочных платежей в разные месяцы.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="explanation">
+                    <strong>Как работает расчет:</strong> Используйте ползунки для быстрой настройки параметров. Налоговый вычет рассчитывается с учетом лимитов: 2 млн на покупку жилья и 3 млн на проценты по ипотеке. Досрочные платежи уменьшают либо срок, либо ежемесячный платеж.
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div class="results-card mortgage">
+                    <div class="card-header">
+                        <div class="card-icon">₸</div>
+                        <h3>Расчет ипотеки</h3>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">Сумма кредита</div>
+                        <div class="result-value" id="loanAmount">4 000 000.00</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">Ежемесячный платёж</div>
+                        <div class="result-value highlight" id="monthlyPayment">44 311.19</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">Начисленные проценты</div>
+                        <div class="result-value" id="totalInterest">6 634 685.60</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">Общая сумма выплат</div>
+                        <div class="result-value total" id="totalPayment">10 634 685.60</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">Необходимый доход</div>
+                        <div class="result-value income" id="requiredIncome">110 777.98</div>
+                    </div>
+                </div>
+                
+                <div class="results-card tax">
+                    <div class="card-header">
+                        <div class="card-icon">%</div>
+                        <h3>Налоговый вычет</h3>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <div class="result-label-with-info">
+                                Вычет за покупку жилья
+                                <div class="info-icon" data-tooltip="Максимальная сумма для вычета: 2 000 000 × ставка НДФЛ">i</div>
+                            </div>
+                        </div>
+                        <div class="result-value tax" id="propertyTaxDeduction">260 000.00</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <div class="result-label-with-info">
+                                Вычет за проценты по ипотеке
+                                <div class="info-icon" data-tooltip="Максимальная сумма для вычета: 3 000 000 × ставка НДФЛ">i</div>
+                            </div>
+                        </div>
+                        <div class="result-value tax" id="interestTaxDeduction">390 000.00</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <div class="result-label-with-info">
+                                Общий налоговый вычет
+                                <div class="info-icon" data-tooltip="Сумма вычета по покупке жилья и по процентам по ипотеке">i</div>
+                            </div>
+                        </div>
+                        <div class="result-value total" id="totalTaxDeduction">650 000.00</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <div class="result-label-with-info">
+                                НДФЛ к возврату за год
+                                <div class="info-icon" data-tooltip="Сумма НДФЛ, которую можно вернуть за один год (не более уплаченного НДФЛ)">i</div>
+                            </div>
+                        </div>
+                        <div class="result-value" id="annualNdflReturn">156 000.00</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <div class="result-label-with-info">
+                                Лет для полного возврата
+                                <div class="info-icon" data-tooltip="Количество лет, необходимое для полного получения налогового вычета">i</div>
+                            </div>
+                        </div>
+                        <div class="result-value years" id="yearsForFullReturn">5</div>
+                    </div>
+                </div>
+                
+                <div class="results-card early" id="earlyResultsCard" style="display: none;">
+                    <div class="card-header">
+                        <div class="card-icon">⚡</div>
+                        <h3>Эффект досрочного погашения</h3>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <div class="result-label-with-info">
+                                Новый срок кредита
+                                <div class="info-icon" data-tooltip="Срок кредита после учета досрочных платежей">i</div>
+                            </div>
+                        </div>
+                        <div class="result-value early" id="newLoanTerm">0 месяцев</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <div class="result-label-with-info">
+                                Новый ежемесячный платёж
+                                <div class="info-icon" data-tooltip="Ежемесячный платеж после учета досрочных платежей">i</div>
+                            </div>
+                        </div>
+                        <div class="result-value early" id="newMonthlyPayment">0.00</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <div class="result-label-with-info">
+                                Экономия на процентах
+                                <div class="info-icon" data-tooltip="Сумма, которую вы сэкономите на процентах благодаря досрочным платежам">i</div>
+                            </div>
+                        </div>
+                        <div class="result-value savings" id="interestSavings">0.00</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <div class="result-label-with-info">
+                                Сумма досрочных платежей
+                                <div class="info-icon" data-tooltip="Общая сумма всех досрочных платежей">i</div>
+                            </div>
+                        </div>
+                        <div class="result-value" id="totalEarlyPayments">0.00</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <div class="result-label-with-info">
+                                Итоговая экономия
+                                <div class="info-icon" data-tooltip="Чистая экономия после вычета суммы досрочных платежей">i</div>
+                            </div>
+                        </div>
+                        <div class="result-value total" id="netSavings">0.00</div>
+                    </div>
+                    
+                    <div class="explanation" id="earlyExplanation">
+                        <strong>Расчет досрочного погашения:</strong> Показывает эффект от внесения дополнительных платежей. Экономия рассчитывается как разница между процентами по исходному и новому графику.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="footer-logos">
+                <div class="footer-logo footer-samolet">Самолет Групп</div>
+                <div class="footer-logo footer-sber">Сбер</div>
+            </div>
+            <p>Калькулятор ипотеки с досрочными платежами © 2026 | Лимиты налогового вычета: 2 млн на покупку жилья, 3 млн на проценты по ипотеке</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM элементы
+        const propertyValueInput = document.getElementById('propertyValue');
+        const propertyValueSlider = document.getElementById('propertyValueSlider');
+        const propertyValueDisplay = document.getElementById('propertyValueDisplay');
+        const propertyValueSliderValue = document.getElementById('propertyValueSliderValue');
+        
+        const downPaymentInput = document.getElementById('downPayment');
+        const downPaymentSlider = document.getElementById('downPaymentSlider');
+        const downPaymentDisplay = document.getElementById('downPaymentDisplay');
+        const downPaymentSliderValue = document.getElementById('downPaymentSliderValue');
+        
+        const interestRateInput = document.getElementById('interestRate');
+        const interestRateSlider = document.getElementById('interestRateSlider');
+        const interestRateDisplay = document.getElementById('interestRateDisplay');
+        const interestRateSliderValue = document.getElementById('interestRateSliderValue');
+        
+        const loanYearsSelect = document.getElementById('loanYears');
+        const loanMonthsSelect = document.getElementById('loanMonths');
+        
+        const currencyRub = document.getElementById('currencyRub');
+        const currencyUsd = document.getElementById('currencyUsd');
+        const rubOption = document.getElementById('rubOption');
+        const usdOption = document.getElementById('usdOption');
+        
+        const exchangeRateInput = document.getElementById('exchangeRate');
+        const exchangeRateSlider = document.getElementById('exchangeRateSlider');
+        const exchangeRateContainer = document.getElementById('exchangeRateContainer');
+        const exchangeRateDisplay = document.getElementById('exchangeRateDisplay');
+        const currentExchangeRateSpan = document.getElementById('currentExchangeRate');
+        const exchangeRateSliderValue = document.getElementById('exchangeRateSliderValue');
+        
+        const annualIncomeInput = document.getElementById('annualIncome');
+        const annualIncomeSlider = document.getElementById('annualIncomeSlider');
+        const annualIncomeDisplay = document.getElementById('annualIncomeDisplay');
+        const annualIncomeSliderValue = document.getElementById('annualIncomeSliderValue');
+        
+        const ndfl13 = document.getElementById('ndfl13');
+        const ndfl15 = document.getElementById('ndfl15');
+        const ndfl13Option = document.getElementById('ndfl13Option');
+        const ndfl15Option = document.getElementById('ndfl15Option');
+        
+        // Элементы для досрочных платежей
+        const earlyPaymentCheckbox = document.getElementById('earlyPaymentCheckbox');
+        const earlyPaymentSection = document.getElementById('earlyPaymentSection');
+        const earlyPaymentsContainer = document.getElementById('earlyPaymentsContainer');
+        const addEarlyPaymentBtn = document.getElementById('addEarlyPayment');
+        const reduceTermOption = document.getElementById('reduceTermOption');
+        const reducePaymentOption = document.getElementById('reducePaymentOption');
+        const reduceTerm = document.getElementById('reduceTerm');
+        const reducePayment = document.getElementById('reducePayment');
+        const earlyResultsCard = document.getElementById('earlyResultsCard');
+        
+        // Элементы для отображения результатов
+        const loanAmountElement = document.getElementById('loanAmount');
+        const monthlyPaymentElement = document.getElementById('monthlyPayment');
+        const totalInterestElement = document.getElementById('totalInterest');
+        const totalPaymentElement = document.getElementById('totalPayment');
+        const requiredIncomeElement = document.getElementById('requiredIncome');
+        
+        // Элементы для налогового вычета
+        const propertyTaxDeductionElement = document.getElementById('propertyTaxDeduction');
+        const interestTaxDeductionElement = document.getElementById('interestTaxDeduction');
+        const totalTaxDeductionElement = document.getElementById('totalTaxDeduction');
+        const annualNdflReturnElement = document.getElementById('annualNdflReturn');
+        const yearsForFullReturnElement = document.getElementById('yearsForFullReturn');
+        
+        // Элементы для досрочных платежей
+        const newLoanTermElement = document.getElementById('newLoanTerm');
+        const newMonthlyPaymentElement = document.getElementById('newMonthlyPayment');
+        const interestSavingsElement = document.getElementById('interestSavings');
+        const totalEarlyPaymentsElement = document.getElementById('totalEarlyPayments');
+        const netSavingsElement = document.getElementById('netSavings');
+        const earlyExplanation = document.getElementById('earlyExplanation');
+        
+        // Элементы для сообщений об ошибках
+        const propertyValueError = document.getElementById('propertyValueError');
+        const downPaymentError = document.getElementById('downPaymentError');
+        const interestRateError = document.getElementById('interestRateError');
+        const loanTermError = document.getElementById('loanTermError');
+        
+        // Текущая выбранная валюта и курс
+        let currentCurrency = 'RUB';
+        let exchangeRate = 90.5;
+        
+        // Лимиты налогового вычета
+        const PROPERTY_DEDUCTION_LIMIT = 2000000;
+        const INTEREST_DEDUCTION_LIMIT = 3000000;
+        
+        // Массив досрочных платежей
+        let earlyPayments = [];
+        
+        // Форматирование числа с разделителями тысяч и двумя знаками после запятой
+        function formatNumber(number, showDecimals = true) {
+            if (isNaN(number) || !isFinite(number)) return showDecimals ? '0.00' : '0';
+            
+            const rounded = Math.round(number * 100) / 100;
+            
+            if (showDecimals) {
+                const parts = rounded.toFixed(2).split('.');
+                const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                const decimalPart = parts[1];
+                return `${integerPart}.${decimalPart}`;
+            } else {
+                return Math.round(rounded).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            }
+        }
+        
+        // Обновление отображения значений
+        function updateValueDisplays() {
+            // Стоимость недвижимости
+            const propertyValue = parseFloat(propertyValueInput.value) || 0;
+            propertyValueDisplay.textContent = formatNumber(propertyValue, false);
+            propertyValueSliderValue.textContent = formatNumber(propertyValue, false);
+            
+            // Первоначальный взнос
+            const downPayment = parseFloat(downPaymentInput.value) || 0;
+            downPaymentDisplay.textContent = formatNumber(downPayment, false);
+            downPaymentSliderValue.textContent = formatNumber(downPayment, false);
+            
+            // Процентная ставка
+            const interestRate = parseFloat(interestRateInput.value) || 0;
+            interestRateDisplay.textContent = `${formatNumber(interestRate, true)}%`;
+            interestRateSliderValue.textContent = `${formatNumber(interestRate, true)}%`;
+            
+            // Годовой доход
+            const annualIncome = parseFloat(annualIncomeInput.value) || 0;
+            annualIncomeDisplay.textContent = formatNumber(annualIncome, false);
+            annualIncomeSliderValue.textContent = formatNumber(annualIncome, false);
+            
+            // Курс доллара
+            currentExchangeRateSpan.textContent = formatNumber(exchangeRate, true);
+            exchangeRateSliderValue.textContent = formatNumber(exchangeRate, true);
+            
+            // Автоматический выбор ставки НДФЛ
+            if (annualIncome > 5000000) {
+                ndfl15.checked = true;
+                ndfl15Option.classList.add('active');
+                ndfl13Option.classList.remove('active');
+            } else {
+                ndfl13.checked = true;
+                ndfl13Option.classList.add('active');
+                ndfl15Option.classList.remove('active');
+            }
+            
+            // Обновление активного класса для валюты
+            if (currencyRub.checked) {
+                rubOption.classList.add('active');
+                usdOption.classList.remove('active');
+            } else {
+                usdOption.classList.add('active');
+                rubOption.classList.remove('active');
+            }
+            
+            // Обновление активного класса для типа досрочного погашения
+            if (reduceTerm.checked) {
+                reduceTermOption.classList.add('active');
+                reducePaymentOption.classList.remove('active');
+            } else {
+                reducePaymentOption.classList.add('active');
+                reduceTermOption.classList.remove('active');
+            }
+        }
+        
+        // Синхронизация ползунков и полей ввода
+        function setupSliderSync(slider, input, updateFunction) {
+            slider.addEventListener('input', function() {
+                input.value = this.value;
+                updateFunction();
+                calculateMortgage();
+            });
+            
+            input.addEventListener('input', function() {
+                const value = parseFloat(this.value) || 0;
+                const min = parseFloat(slider.min);
+                const max = parseFloat(slider.max);
+                
+                if (value < min) {
+                    this.value = min;
+                } else if (value > max) {
+                    this.value = max;
+                }
+                
+                slider.value = this.value;
+                updateFunction();
+                calculateMortgage();
+            });
+        }
+        
+        // Заполняем выпадающие списки для лет и месяцев
+        function populateSelectOptions() {
+            // Годы от 0 до 30
+            for (let i = 0; i <= 30; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i + ' ' + getNoun(i, 'год', 'года', 'лет');
+                loanYearsSelect.appendChild(option);
+            }
+            
+            // Месяцы от 0 до 12
+            for (let i = 0; i <= 12; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i + ' ' + getNoun(i, 'месяц', 'месяца', 'месяцев');
+                loanMonthsSelect.appendChild(option);
+            }
+            
+            loanYearsSelect.value = 20;
+            loanMonthsSelect.value = 0;
+        }
+        
+        // Функция для правильного склонения существительных
+        function getNoun(number, one, two, five) {
+            let n = Math.abs(number);
+            n %= 100;
+            if (n >= 5 && n <= 20) {
+                return five;
+            }
+            n %= 10;
+            if (n === 1) {
+                return one;
+            }
+            if (n >= 2 && n <= 4) {
+                return two;
+            }
+            return five;
+        }
+        
+        // Показать/скрыть поле для курса доллара
+        function toggleExchangeRateVisibility() {
+            const isUsd = currencyUsd.checked;
+            
+            if (isUsd) {
+                exchangeRateContainer.style.display = 'block';
+                exchangeRateDisplay.style.display = 'block';
+                currentExchangeRateSpan.textContent = formatNumber(exchangeRate, true);
+            } else {
+                exchangeRateContainer.style.display = 'none';
+                exchangeRateDisplay.style.display = 'none';
+            }
+        }
+        
+        // Показать/скрыть блок досрочных платежей
+        function toggleEarlyPaymentSection() {
+            if (earlyPaymentCheckbox.checked) {
+                earlyPaymentSection.style.display = 'block';
+                earlyResultsCard.style.display = 'flex';
+            } else {
+                earlyPaymentSection.style.display = 'none';
+                earlyResultsCard.style.display = 'none';
+            }
+        }
+        
+        // Добавление строки досрочного платежа
+        function addEarlyPaymentRow(payment = {month: '', amount: ''}) {
+            const row = document.createElement('div');
+            row.className = 'early-payment-row';
+            row.innerHTML = `
+                <input type="number" class="early-payment-month" placeholder="Месяц" min="1" value="${payment.month || ''}">
+                <input type="number" class="early-payment-amount" placeholder="Сумма" min="0" value="${payment.amount || ''}">
+                <button type="button" class="remove-early-payment">×</button>
+            `;
+            
+            earlyPaymentsContainer.appendChild(row);
+            
+            // Обработчики событий для новой строки
+            const monthInput = row.querySelector('.early-payment-month');
+            const amountInput = row.querySelector('.early-payment-amount');
+            const removeBtn = row.querySelector('.remove-early-payment');
+            
+            monthInput.addEventListener('input', () => {
+                calculateMortgage();
+            });
+            
+            amountInput.addEventListener('input', () => {
+                calculateMortgage();
+            });
+            
+            removeBtn.addEventListener('click', () => {
+                row.remove();
+                calculateMortgage();
+            });
+        }
+        
+        // Сбор данных о досрочных платежах
+        function collectEarlyPayments() {
+            earlyPayments = [];
+            const rows = earlyPaymentsContainer.querySelectorAll('.early-payment-row');
+            
+            rows.forEach(row => {
+                const month = parseInt(row.querySelector('.early-payment-month').value) || 0;
+                const amount = parseFloat(row.querySelector('.early-payment-amount').value) || 0;
+                
+                if (month > 0 && amount > 0) {
+                    earlyPayments.push({month, amount});
+                }
+            });
+            
+            // Сортировка по месяцам
+            earlyPayments.sort((a, b) => a.month - b.month);
+            
+            return earlyPayments;
+        }
+        
+        // Расчет аннуитетного платежа
+        function calculateAnnuityPayment(loanAmount, annualRate, months) {
+            if (months === 0 || annualRate === 0 || loanAmount === 0) return 0;
+            
+            const monthlyRate = annualRate / 100 / 12;
+            const annuityCoefficient = monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+            
+            return loanAmount * annuityCoefficient;
+        }
+        
+        // Расчет графика платежей с досрочными платежами
+        function calculateWithEarlyPayments(loanAmount, annualRate, months, monthlyPayment, earlyPayments, earlyType) {
+            if (earlyPayments.length === 0) {
+                return {
+                    newMonthlyPayment: monthlyPayment,
+                    newMonths: months,
+                    totalInterest: monthlyPayment * months - loanAmount,
+                    totalEarlyPayments: 0,
+                    interestSavings: 0,
+                    netSavings: 0
+                };
+            }
+            
+            const monthlyRate = annualRate / 100 / 12;
+            let balance = loanAmount;
+            let totalInterest = 0;
+            let totalPaid = 0;
+            let monthsPaid = 0;
+            let currentPayment = monthlyPayment;
+            let earlyPaymentIndex = 0;
+            
+            // Создаем копию досрочных платежей для работы
+            const sortedPayments = [...earlyPayments].sort((a, b) => a.month - b.month);
+            
+            // Расчет для уменьшения срока
+            if (earlyType === 'reduceTerm') {
+                for (let month = 1; month <= months * 2; month++) { // Удваиваем лимит для случая сильного сокращения срока
+                    if (balance <= 0.01) break;
+                    
+                    // Начисление процентов
+                    const interest = balance * monthlyRate;
+                    totalInterest += interest;
+                    
+                    // Обычный платеж
+                    const principal = currentPayment - interest;
+                    balance -= principal;
+                    totalPaid += currentPayment;
+                    monthsPaid++;
+                    
+                    // Проверяем досрочный платеж в этом месяце
+                    if (earlyPaymentIndex < sortedPayments.length && sortedPayments[earlyPaymentIndex].month === month) {
+                        const earlyAmount = sortedPayments[earlyPaymentIndex].amount;
+                        balance -= earlyAmount;
+                        totalPaid += earlyAmount;
+                        earlyPaymentIndex++;
+                        
+                        // Пересчет срока после досрочного платежа
+                        if (balance > 0) {
+                            // Рассчитываем новый срок для оставшейся суммы с текущим платежом
+                            const newMonths = Math.ceil(Math.log(currentPayment / (currentPayment - balance * monthlyRate)) / Math.log(1 + monthlyRate));
+                            // Обновляем общее количество месяцев
+                            months = month + newMonths;
+                        }
+                    }
+                    
+                    if (balance <= 0.01) {
+                        // Корректировка при переплате
+                        if (balance < 0) {
+                            totalPaid += balance; // balance отрицательный
+                        }
+                        balance = 0;
+                        break;
+                    }
+                }
+                
+                const originalTotalInterest = monthlyPayment * months - loanAmount;
+                const interestSavings = originalTotalInterest - totalInterest;
+                const totalEarlyPayments = sortedPayments.reduce((sum, p) => sum + p.amount, 0);
+                const netSavings = interestSavings - totalEarlyPayments;
+                
+                return {
+                    newMonthlyPayment: monthlyPayment,
+                    newMonths: monthsPaid,
+                    totalInterest,
+                    totalEarlyPayments,
+                    interestSavings,
+                    netSavings: netSavings > 0 ? netSavings : 0
+                };
+            }
+            // Расчет для уменьшения платежа
+            else {
+                let monthsPaid = 0;
+                let totalInterest = 0;
+                let totalEarlyPayments = 0;
+                let currentBalance = loanAmount;
+                let currentMonthlyPayment = monthlyPayment;
+                
+                for (let month = 1; month <= months; month++) {
+                    if (currentBalance <= 0.01) break;
+                    
+                    // Начисление процентов
+                    const interest = currentBalance * monthlyRate;
+                    totalInterest += interest;
+                    
+                    // Обычный платеж
+                    const principal = currentMonthlyPayment - interest;
+                    currentBalance -= principal;
+                    monthsPaid++;
+                    
+                    // Проверяем досрочный платеж в этом месяце
+                    if (earlyPaymentIndex < sortedPayments.length && sortedPayments[earlyPaymentIndex].month === month) {
+                        const earlyAmount = sortedPayments[earlyPaymentIndex].amount;
+                        currentBalance -= earlyAmount;
+                        totalEarlyPayments += earlyAmount;
+                        earlyPaymentIndex++;
+                        
+                        // Пересчет платежа после досрочного платежа
+                        if (currentBalance > 0 && month < months) {
+                            const remainingMonths = months - month;
+                            currentMonthlyPayment = calculateAnnuityPayment(currentBalance, annualRate, remainingMonths);
+                        }
+                    }
+                    
+                    if (currentBalance <= 0.01) {
+                        if (currentBalance < 0) {
+                            totalInterest += currentBalance; // Корректировка процентов
+                        }
+                        currentBalance = 0;
+                        break;
+                    }
+                }
+                
+                const originalTotalInterest = monthlyPayment * months - loanAmount;
+                const interestSavings = originalTotalInterest - totalInterest;
+                const netSavings = interestSavings - totalEarlyPayments;
+                
+                return {
+                    newMonthlyPayment: currentMonthlyPayment,
+                    newMonths: months,
+                    totalInterest,
+                    totalEarlyPayments,
+                    interestSavings,
+                    netSavings: netSavings > 0 ? netSavings : 0
+                };
+            }
+        }
+        
+        // Расчет налогового вычета
+        function calculateTaxDeduction(propertyValue, totalInterest, annualIncome) {
+            let ndflRate = ndfl13.checked ? 13 : 15;
+            
+            if (annualIncome > 5000000) {
+                ndflRate = 15;
+                ndfl15.checked = true;
+                ndfl13.checked = false;
+                ndfl15Option.classList.add('active');
+                ndfl13Option.classList.remove('active');
+            }
+            
+            const propertyDeductionBase = Math.min(propertyValue, PROPERTY_DEDUCTION_LIMIT);
+            const propertyTaxDeduction = propertyDeductionBase * ndflRate / 100;
+            
+            const interestDeductionBase = Math.min(totalInterest, INTEREST_DEDUCTION_LIMIT);
+            const interestTaxDeduction = interestDeductionBase * ndflRate / 100;
+            
+            const totalTaxDeduction = propertyTaxDeduction + interestTaxDeduction;
+            
+            const annualNdfl = annualIncome * ndflRate / 100;
+            const annualNdflReturn = Math.min(totalTaxDeduction, annualNdfl);
+            
+            let yearsForFullReturn = 0;
+            if (annualNdflReturn > 0) {
+                yearsForFullReturn = Math.ceil(totalTaxDeduction / annualNdflReturn);
+            }
+            
+            return {
+                propertyTaxDeduction,
+                interestTaxDeduction,
+                totalTaxDeduction,
+                annualNdflReturn,
+                yearsForFullReturn,
+                ndflRate
+            };
+        }
+        
+        // Основная функция расчета
+        function calculateMortgage() {
+            // Валидация
+            const validation = validateInputs();
+            
+            if (!validation.isValid) {
+                return;
+            }
+            
+            const {propertyValue, downPayment, interestRate, totalMonths} = validation;
+            
+            // Годовой доход
+            const annualIncome = parseFloat(annualIncomeInput.value) || 0;
+            
+            // Сумма кредита
+            const loanAmount = propertyValue - downPayment;
+            
+            // Ежемесячный платеж
+            const monthlyPayment = calculateAnnuityPayment(loanAmount, interestRate, totalMonths);
+            
+            // Общая сумма выплат
+            const totalPayment = monthlyPayment * totalMonths;
+            
+            // Начисленные проценты
+            const totalInterest = totalPayment - loanAmount;
+            
+            // Необходимый доход
+            const requiredIncome = monthlyPayment * 2.5;
+            
+            // Расчет налогового вычета
+            const taxDeduction = calculateTaxDeduction(propertyValue, totalInterest, annualIncome);
+            
+            // Расчет досрочных платежей
+            let earlyResults = null;
+            if (earlyPaymentCheckbox.checked) {
+                const earlyPayments = collectEarlyPayments();
+                const earlyType = reduceTerm.checked ? 'reduceTerm' : 'reducePayment';
+                earlyResults = calculateWithEarlyPayments(loanAmount, interestRate, totalMonths, monthlyPayment, earlyPayments, earlyType);
+                
+                // Обновление блока результатов досрочного погашения
+                newLoanTermElement.textContent = `${earlyResults.newMonths} ${getNoun(earlyResults.newMonths, 'месяц', 'месяца', 'месяцев')}`;
+                newMonthlyPaymentElement.textContent = formatNumber(earlyResults.newMonthlyPayment, true);
+                interestSavingsElement.textContent = formatNumber(earlyResults.interestSavings, true);
+                totalEarlyPaymentsElement.textContent = formatNumber(earlyResults.totalEarlyPayments, true);
+                netSavingsElement.textContent = formatNumber(earlyResults.netSavings, true);
+                
+                // Обновление пояснения
+                if (earlyType === 'reduceTerm') {
+                    earlyExplanation.innerHTML = `<strong>Уменьшение срока:</strong> Ежемесячный платеж остался прежним, срок кредита сократился на ${totalMonths - earlyResults.newMonths} месяцев. Вы сэкономили ${formatNumber(earlyResults.interestSavings, true)} на процентах.`;
+                } else {
+                    earlyExplanation.innerHTML = `<strong>Уменьшение платежа:</strong> Срок кредита не изменился, ежемесячный платеж уменьшился на ${formatNumber(monthlyPayment - earlyResults.newMonthlyPayment, true)}. Вы сэкономили ${formatNumber(earlyResults.interestSavings, true)} на процентах.`;
+                }
+            }
+            
+            // Обновление отображения результатов
+            loanAmountElement.textContent = formatNumber(loanAmount, true);
+            monthlyPaymentElement.textContent = formatNumber(monthlyPayment, true);
+            totalInterestElement.textContent = formatNumber(totalInterest, true);
+            totalPaymentElement.textContent = formatNumber(totalPayment, true);
+            requiredIncomeElement.textContent = formatNumber(requiredIncome, true);
+            
+            // Обновление отображения налогового вычета
+            propertyTaxDeductionElement.textContent = formatNumber(taxDeduction.propertyTaxDeduction, true);
+            interestTaxDeductionElement.textContent = formatNumber(taxDeduction.interestTaxDeduction, true);
+            totalTaxDeductionElement.textContent = formatNumber(taxDeduction.totalTaxDeduction, true);
+            annualNdflReturnElement.textContent = formatNumber(taxDeduction.annualNdflReturn, true);
+            yearsForFullReturnElement.textContent = taxDeduction.yearsForFullReturn;
+            
+            // Обновление отображения значений
+            updateValueDisplays();
+        }
+        
+        // Валидация ввода
+        function validateInputs() {
+            let isValid = true;
+            
+            // Сброс предыдущих ошибок
+            propertyValueError.textContent = '';
+            downPaymentError.textContent = '';
+            interestRateError.textContent = '';
+            loanTermError.textContent = '';
+            
+            propertyValueInput.classList.remove('invalid');
+            downPaymentInput.classList.remove('invalid');
+            interestRateInput.classList.remove('invalid');
+            loanYearsSelect.classList.remove('invalid');
+            loanMonthsSelect.classList.remove('invalid');
+            
+            // Проверка стоимости недвижимости
+            const propertyValue = parseFloat(propertyValueInput.value);
+            if (isNaN(propertyValue) || propertyValue <= 0) {
+                propertyValueError.textContent = 'Введите положительное число';
+                propertyValueInput.classList.add('invalid');
+                isValid = false;
+            } else if (propertyValue > 999999999) {
+                propertyValueError.textContent = 'Максимальное значение 999,999,999';
+                propertyValueInput.classList.add('invalid');
+                isValid = false;
+            }
+            
+            // Проверка первоначального взноса
+            const downPayment = parseFloat(downPaymentInput.value);
+            if (isNaN(downPayment) || downPayment < 0) {
+                downPaymentError.textContent = 'Введите неотрицательное число';
+                downPaymentInput.classList.add('invalid');
+                isValid = false;
+            } else if (downPayment > 99999999) {
+                downPaymentError.textContent = 'Максимальное значение 99,999,999';
+                downPaymentInput.classList.add('invalid');
+                isValid = false;
+            } else if (downPayment > propertyValue) {
+                downPaymentError.textContent = 'Взнос не может превышать стоимость недвижимости';
+                downPaymentInput.classList.add('invalid');
+                isValid = false;
+            }
+            
+            // Проверка процентной ставки
+            const interestRate = parseFloat(interestRateInput.value);
+            if (isNaN(interestRate) || interestRate <= 0) {
+                interestRateError.textContent = 'Введите положительное число';
+                interestRateInput.classList.add('invalid');
+                isValid = false;
+            } else if (interestRate > 30) {
+                interestRateError.textContent = 'Максимальное значение 30%';
+                interestRateInput.classList.add('invalid');
+                isValid = false;
+            }
+            
+            // Проверка срока кредита
+            const years = parseInt(loanYearsSelect.value) || 0;
+            const months = parseInt(loanMonthsSelect.value) || 0;
+            const totalMonths = years * 12 + months;
+            
+            if (totalMonths <= 0) {
+                loanTermError.textContent = 'Срок кредита должен быть больше 0 месяцев';
+                loanYearsSelect.classList.add('invalid');
+                loanMonthsSelect.classList.add('invalid');
+                isValid = false;
+            }
+            
+            // Проверка курса доллара
+            if (currencyUsd.checked) {
+                const newExchangeRate = parseFloat(exchangeRateInput.value);
+                if (isNaN(newExchangeRate) || newExchangeRate <= 0) {
+                    alert('Введите корректный курс доллара (положительное число)');
+                    isValid = false;
+                } else {
+                    exchangeRate = newExchangeRate;
+                    currentExchangeRateSpan.textContent = formatNumber(exchangeRate, true);
+                }
+            }
+            
+            return {isValid, propertyValue, downPayment, interestRate, years, months, totalMonths};
+        }
+        
+        // Инициализация при загрузке страницы
+        function init() {
+            // Заполняем выпадающие списки
+            populateSelectOptions();
+            
+            // Устанавливаем значения по умолчанию
+            propertyValueInput.value = 5000000;
+            propertyValueSlider.value = 5000000;
+            
+            downPaymentInput.value = 1000000;
+            downPaymentSlider.value = 1000000;
+            
+            interestRateInput.value = 12.75;
+            interestRateSlider.value = 12.75;
+            
+            exchangeRateInput.value = 90.5;
+            exchangeRateSlider.value = 90.5;
+            
+            annualIncomeInput.value = 1200000;
+            annualIncomeSlider.value = 1200000;
+            
+            // Настраиваем синхронизацию ползунков
+            setupSliderSync(propertyValueSlider, propertyValueInput, updateValueDisplays);
+            setupSliderSync(downPaymentSlider, downPaymentInput, updateValueDisplays);
+            setupSliderSync(interestRateSlider, interestRateInput, updateValueDisplays);
+            setupSliderSync(exchangeRateSlider, exchangeRateInput, () => {
+                exchangeRate = parseFloat(exchangeRateInput.value) || 90.5;
+                currentExchangeRateSpan.textContent = formatNumber(exchangeRate, true);
+                if (currencyUsd.checked) {
+                    calculateMortgage();
+                }
+            });
+            setupSliderSync(annualIncomeSlider, annualIncomeInput, updateValueDisplays);
+            
+            // Добавляем обработчики событий
+            loanYearsSelect.addEventListener('change', calculateMortgage);
+            loanMonthsSelect.addEventListener('change', calculateMortgage);
+            
+            // Обработчики для валюты
+            currencyRub.addEventListener('change', () => {
+                toggleExchangeRateVisibility();
+                calculateMortgage();
+            });
+            
+            currencyUsd.addEventListener('change', () => {
+                toggleExchangeRateVisibility();
+                calculateMortgage();
+            });
+            
+            // Обработчики для клика по опциям валюты
+            rubOption.addEventListener('click', () => {
+                currencyRub.checked = true;
+                currencyRub.dispatchEvent(new Event('change'));
+            });
+            
+            usdOption.addEventListener('click', () => {
+                currencyUsd.checked = true;
+                currencyUsd.dispatchEvent(new Event('change'));
+            });
+            
+            // Обработчики для НДФЛ
+            ndfl13.addEventListener('change', calculateMortgage);
+            ndfl15.addEventListener('change', calculateMortgage);
+            
+            // Обработчики для клика по опциям НДФЛ
+            ndfl13Option.addEventListener('click', () => {
+                ndfl13.checked = true;
+                ndfl13.dispatchEvent(new Event('change'));
+            });
+            
+            ndfl15Option.addEventListener('click', () => {
+                ndfl15.checked = true;
+                ndfl15.dispatchEvent(new Event('change'));
+            });
+            
+            // Обработчики для досрочных платежей
+            earlyPaymentCheckbox.addEventListener('change', () => {
+                toggleEarlyPaymentSection();
+                calculateMortgage();
+            });
+            
+            addEarlyPaymentBtn.addEventListener('click', () => {
+                addEarlyPaymentRow();
+            });
+            
+            reduceTerm.addEventListener('change', calculateMortgage);
+            reducePayment.addEventListener('change', calculateMortgage);
+            
+            // Обработчики для клика по опциям типа досрочного погашения
+            reduceTermOption.addEventListener('click', () => {
+                reduceTerm.checked = true;
+                reduceTerm.dispatchEvent(new Event('change'));
+            });
+            
+            reducePaymentOption.addEventListener('click', () => {
+                reducePayment.checked = true;
+                reducePayment.dispatchEvent(new Event('change'));
+            });
+            
+            // Добавляем пример досрочного платежа
+            addEarlyPaymentRow({month: 12, amount: 200000});
+            addEarlyPaymentRow({month: 24, amount: 300000});
+            
+            // Обновляем отображение значений
+            updateValueDisplays();
+            
+            // Показываем/скрываем поле курса доллара
+            toggleExchangeRateVisibility();
+            
+            // Выполняем первый расчет
+            calculateMortgage();
+        }
+        
+        // Запуск инициализации при загрузке DOM
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+</!doctype>
