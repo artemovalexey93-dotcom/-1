@@ -1,0 +1,212 @@
+/*!
+Theme Name: Aster Cleaning Service
+Theme URI: https://asterthemes.com/products/aster-cleaning-service
+Author: asterthemes
+Author URI: https://asterthemes.com
+Description: Aster Cleaning Service Theme provides a structured layout for presenting cleaning services, company information, contact details, and other relevant website content. The design includes sections for service descriptions, images, introductory information, and calls to action. Cleaning companies can use dedicated sections to explain their available services, pricing information, and operating details. The layout can also present house cleaning services through organized content blocks with supporting images and descriptions. For commercial cleaning companies, the theme provides space to outline service options, business information, and contact details. Residential cleaning businesses can use similar sections to describe home- focused services and provide inquiry information. The responsive design allows pages to adjust across desktop, tablet, and mobile screen sizes. Customizable elements can be used to modify text, images, colors, menus, and other visual components according to website requirements. Navigation menus help organize important pages, while contact sections can display phone numbers, email addresses, locations, and inquiry forms. Additional sections can be used for testimonials, service details, announcements, or other informational content, depending on the website’s content structure and configuration. 
+Version: 1.3
+Tested up to: 7.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
+Template: cleaning-services-agent
+Text Domain: aster-cleaning-service
+Tags: one-column, two-columns, three-columns, four-columns, grid-layout, custom-background, custom-logo, custom-colors, custom-header, custom-menu, editor-style, flexible-header, featured-images, threaded-comments, translation-ready, theme-options, sticky-post, footer-widgets, full-width-template, left-sidebar, right-sidebar, portfolio, blog, photography, post-formats, rtl-language-support
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned.
+
+Aster Cleaning Service is based on Underscores https://underscores.me/, (C) 2012-2020 Automattic, Inc.
+Underscores is distributed under the terms of the GNU GPL v2 or later.
+
+Normalizing styles have been helped along thanks to the fine work of
+Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
+*/
+
+/**
+ * Team Section
+ */
+
+.aster-cleaning-service-team {
+	padding: 100px 0;
+	background: #f8f8f8;
+}
+.aster-cleaning-service-team .container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 15px;
+}
+.team-heading {
+	margin-bottom: 15px;
+}
+.team-subtitle {
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: var(--primary-color);
+}
+.team-title {
+	margin: 0;
+	font-size: 27px;
+	font-weight: 700;
+	line-height: 1.2;
+	color: #000000;
+}
+.team-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 30px;
+}
+.team-card {
+	overflow: hidden;
+	text-align: center;
+	transition: .3s ease;
+}
+.team-card:hover {
+	transform: translateY(-8px);
+}
+.team-image {
+	overflow: hidden;
+	border-radius: 12px;
+}
+.team-member-image {
+	display: block;
+	width: 100%;
+	height: 400px;
+	object-fit: cover;
+	transition: .4s;
+	border-radius: 12px;
+}
+.team-card:hover .team-member-image {
+	transform: scale(1.06);
+}
+.team-content {
+    text-align: start;
+    padding: 0 0 0 15px;
+    position: relative;
+    margin-top: 10px;
+}
+.team-content:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+.team-designation {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+	color: #8C8C8C;
+}
+.team-name {
+    margin: -5px 0 0 0;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #000000;
+}
+.team-button-wrap {
+	margin-top: 60px;
+	text-align: center;
+}
+.team-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 13px 30px;
+	background: #7088BA;
+	color: #fff !important;
+	font-size: 16px;
+	font-weight: 600;
+	text-decoration: none;
+	border-radius: 40px;
+	border-left: 6px solid var(--primary-color);
+	transition: .3s ease;
+}
+.team-button:hover,
+.team-button:focus {
+	background: #222;
+	color: #fff;
+	text-decoration: none;
+}
+.team-button:focus-visible {
+	outline: 2px solid var(--primary-color);
+	outline-offset: 3px;
+}
+
+.product-contact-inner h3 {
+    color: #222222 !important;
+}
+.banner-section.banner-style-1 .banner-single .banner-caption .banner-catption-wrapper .banner-caption-title {
+    text-shadow: none !important;
+}
+
+
+@media only screen and (max-width: 1500px) {
+
+}
+
+@media only screen and (max-width: 1150px) {
+	.aster-cleaning-service-team {
+		padding: 0 !important;
+	}
+	section#cleaning_services_agent_banner_section {
+		position: relative;
+		height: 680px;
+	}
+}
+
+@media (max-width: 991px) {
+	.team-grid {
+		grid-template-columns: repeat(2,1fr);
+	}
+	.team-title {
+		font-size: 34px;
+	}
+	.team-member-image {
+		height: 320px;
+	}
+	.asterthemes-banner-wrapper.banner-slider .slick-track {
+		margin: 0;
+	}
+	.aster-cleaning-service-team {
+		padding: 30px 0 !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.aster-cleaning-service-team {
+		padding: 60px 0;
+	}
+	.team-grid {
+		grid-template-columns: 1fr;
+		gap: 25px;
+	}
+	.team-subtitle {
+	    font-size: 11px;
+	}
+	.product-contact-inner h3,.team-title {
+		font-size: 22px !important;
+	}
+	.site-footer h4, footer#colophon h2.wp-block-heading, footer#colophon .widgettitle, footer#colophon .widget-title {
+		text-align: center !important;
+	}
+	.team-heading {
+		text-align: center;
+	}
+	p.site-title,header.site-header .header-main-wrapper:not(.transparent-header) .bottom-header-outer-wrapper .bottom-header-part .bottom-header-part-wrapper .site-branding .site-identity .site-title a, .site-description{
+		font-size: 18px !important;
+	}
+	.header-btn a.asterthemes-button {
+	    padding: 7px 21px;
+	}
+	h1.page-header-title {
+		font-size: 30px !important;
+	}
+}
